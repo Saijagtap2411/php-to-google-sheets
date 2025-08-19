@@ -1,0 +1,33 @@
+const API_KEY = "secret API key"; 
+
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+
+    
+    if (!data.apiKey || data.apiKey !== API_KEY) {
+      return ContentService
+               .createTextOutput(JSON.stringify({result: "error", message: "Invalid API key"}))
+               .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
+
+    sheet.appendRow([
+      data.name,
+      data.email,
+      data.phone,
+      data.usdt,
+      new Date()
+    ]);
+
+    return ContentService
+             .createTextOutput(JSON.stringify({result: "success"}))
+             .setMimeType(ContentService.MimeType.JSON);
+             
+  } catch (error) {
+    return ContentService
+             .createTextOutput(JSON.stringify({result: "error", message: error.toString()}))
+             .setMimeType(ContentService.MimeType.JSON);
+  }
+}
